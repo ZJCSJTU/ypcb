@@ -2,6 +2,7 @@
     "restaurants": [
         {
             "title": "Panda",
+            "image_url": "https://upload.wikimedia.org/wikipedia/en/thumb/8/85/Panda_Express_logo.svg/440px-Panda_Express_logo.svg.png?ts=1000",
             "subtitle": "This is Panda restaurant.",
             "default_action": {
                 "type": "web_url",
@@ -28,6 +29,7 @@
         },
         {
             "title": "Cardamon",
+            "image_url": "http://nebula.wsimg.com/9d217ff792460fabee13c97d2d2a9b8a?AccessKeyId=601EDBB44EC12CFCF217&disposition=0&alloworigin=1",
             "subtitle": "This is Cardamon.",
             "default_action": {
                 "type": "web_url",
@@ -54,6 +56,7 @@
         },
         {
             "title": "No Thai",
+            "image_url": "http://nothai.com/wp-content/themes/nothai-child/images/logo@2x.png?ts=1000",
             "subtitle": "This is No Thai.",
             "default_action": {
                 "type": "web_url",
