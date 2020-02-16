@@ -1,7 +1,7 @@
 {
-    "name": "yelp-chatbot",
+    "name": "original-coast-clothing",
     "version": "1.0.0",
-    "description": "A Yelp chatbot!",
+    "description": "A sample app to show how to build a great Messenger experience!",
     "main": "app.js",
     "scripts": {
         "start": "node app.js",
