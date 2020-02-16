@@ -2,10 +2,13 @@ const PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN;
 
 const request = require('request');
 const utils = require('../utils/utils.js')
-
+const Api = require('../api/api');
 const dataRestaurants = require('../data/restaurants.json').restaurants;
 // var restaurants = JSON.parse(JSON.stringify(dataRestaurants));
 // utils.setPayload(restaurants);
+
+// include all APIs.
+var api = new Api();
 
 module.exports = class Chatbot {
     constructor() {
