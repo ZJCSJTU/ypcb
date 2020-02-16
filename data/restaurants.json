@@ -1,0 +1,82 @@
+{
+    "restaurants": [
+        {
+            "title": "Panda",
+            "subtitle": "This is Panda restaurant.",
+            "default_action": {
+                "type": "web_url",
+                "url": "https://www.pandaexpress.com/",
+                "webview_height_ratio": "tall"
+            },
+            "buttons": [
+                {
+                    "type": "postback",
+                    "title": "Select it",
+                    "payload": "SELECT_IT"
+                },
+                {
+                    "type": "postback",
+                    "title": "See details",
+                    "payload": "SEE_DETAILS"
+                },
+                {
+                    "type": "postback",
+                    "title": "Remove it",
+                    "payload": "REMOVE_IT"
+                }
+            ]
+        },
+        {
+            "title": "Cardamon",
+            "subtitle": "This is Cardamon.",
+            "default_action": {
+                "type": "web_url",
+                "url": "https://Cardamon.com/view?item=103",
+                "webview_height_ratio": "tall"
+            },
+            "buttons": [
+                {
+                    "type": "postback",
+                    "title": "Select it",
+                    "payload": "SELECT_IT"
+                },
+                {
+                    "type": "postback",
+                    "title": "See details",
+                    "payload": "SEE_DETAILS"
+                },
+                {
+                    "type": "postback",
+                    "title": "Remove it",
+                    "payload": "REMOVE_IT"
+                }
+            ]
+        },
+        {
+            "title": "No Thai",
+            "subtitle": "This is No Thai.",
+            "default_action": {
+                "type": "web_url",
+                "url": "https://NoThai.com/view?item=103",
+                "webview_height_ratio": "tall"
+            },
+            "buttons": [
+                {
+                    "type": "postback",
+                    "title": "Select it",
+                    "payload": "SELECT_IT"
+                },
+                {
+                    "type": "postback",
+                    "title": "See details",
+                    "payload": "SEE_DETAILS"
+                },
+                {
+                    "type": "postback",
+                    "title": "Remove it",
+                    "payload": "REMOVE_IT"
+                }
+            ]
+        }
+    ]
+}
