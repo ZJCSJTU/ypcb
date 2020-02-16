@@ -14,6 +14,16 @@ module.exports = class Chatbot {
     constructor() {
         // default entry state is called root.
         this.state = 'root';
+        this.lastInteractionTime = Date.now();
+        this.dataRestaurants = dataRestaurants;
+        this.restaurants = JSON.parse(JSON.stringify(this.dataRestaurants));
+        utils.setPayload(this.restaurants);
+    }
+
+    restart() {
+        // return to root state and re-initialize hardcoded data.
+        this.state = 'root';
+        this.lastInteractionTime = Date.now();
         this.dataRestaurants = dataRestaurants;
         this.restaurants = JSON.parse(JSON.stringify(this.dataRestaurants));
         utils.setPayload(this.restaurants);
