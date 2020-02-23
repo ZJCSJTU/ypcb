@@ -39,67 +39,19 @@ module.exports = class Chatbot {
         utils.setPayload(this.restaurants);
     }
 
-    yelpFormatButton(result) {
-        return {
-            "title": result.name,
-            "image_url": result.image_url,
-            "subtitle": '...',
-            "default_action": {
-                "type": "web_url",
-                "url": result.url,
-                "webview_height_ratio": "tall"
-            },
-            "buttons": [
-                {
-                    "type": "postback",
-                    "title": "Select it",
-                    "payload": "SELECT_IT"
-                },
-                {
-                    "type": "postback",
-                    "title": "See details",
-                    "payload": "SEE_DETAILS"
-                },
-                {
-                    "type": "postback",
-                    "title": "Remove it",
-                    "payload": "REMOVE_IT"
+    sendRestaurantList(sender_psid) {
+        // send the first three restaurants.
+        utils.setPayload(this.restaurants);
+        var response = {
+            "attachment": {
+                "type": "template",
+                "payload": {
+                    "template_type": "generic",
+                    "elements": this.restaurants.slice(0, 3)
                 }
-            ]
+            }
         };
-    }
-
-    // arguments and return values undecided
-    yelpFusion(require, sender_psid) {
-        const searchRequest = {
-            term: require,
-            location: 'ann arbor, mi',
-            limit: 10
-        };
-        // const request = async () => {
-         client.search(searchRequest).then(response => {
-             const results = response.jsonBody.businesses;
-             this.dataRestaurants = JSON.parse(JSON.stringify(results));
-             results.forEach((result) => {
-                this.restaurants = this.restaurants.concat([this.yelpFormatButton(result)]);
-            });
-             console.log(this.restaurants.length);
-             utils.setPayload(this.restaurants);
-             response = {
-                 "attachment": {
-                     "type": "template",
-                     "payload": {
-                         "template_type": "generic",
-                         "elements": this.restaurants.slice(0, 3)
-                     }
-                 }
-             }
-             this.callSendAPI(sender_psid, response);
-         }).catch(e => {
-             console.log(e);
-         });
-        // hard-coded
-        // return dataRestaurants;
+        this.callSendAPI(sender_psid, response);
     }
 
     handleMessage(sender_psid, received_message) {
@@ -120,9 +72,11 @@ module.exports = class Chatbot {
                 // if user wants to find restaurant, state -> FIND
                 // and displays three restaurants returned by Yelp fusion
                 if (userInput.intent == 'find') {
-                    this.restaurants = [];
-                    this.dataRestaurants = [];
-                    this.yelpFusion(userInput.require, sender_psid);
+                    var yelpResult = api.yelpFusion(userInput.require)
+                    this.dataRestaurants = yelpResult[0];
+                    this.restaurants = yelpResult[1]
+                    this.sendRestaurantList(sender_psid);
+                    // this.yelpFusion(userInput.require, sender_psid);
                     this.state = states.FIND;
                 } else {
                     // if user says any other intents, stay in ROOT, ask again
@@ -130,15 +84,15 @@ module.exports = class Chatbot {
                         "text": 'Please say your requirements'
                     }
                     this.callSendAPI(sender_psid, response);
-
                 }
             } else if (this.state == states.FIND) {
                 // if user wants to change search filter, then re-call Yelp,
                 // and display new three restaurants
                 if (userInput.intent == 'find') {
-                    this.restaurants = [];
-                    this.dataRestaurants = [];
-                    this.yelpFusion(userInput.require, sender_psid);
+                    var yelpResult = api.yelpFusion(userInput.require)
+                    this.dataRestaurants = yelpResult[0];
+                    this.restaurants = yelpResult[1];
+                    this.sendRestaurantList(sender_psid);
                 } else if (userInput.intent == 'remove') {
                     // if user removes one restaurant, display one new from the ones returned by Yelp API
                     var idx = userInput.position;
@@ -146,17 +100,7 @@ module.exports = class Chatbot {
                     this.callSendAPI(sender_psid, response);
                     this.restaurants.splice(idx, 1);
                     this.dataRestaurants.splice(idx, 1);
-                    utils.setPayload(this.restaurants);
-                    response = {
-                        "attachment": {
-                            "type": "template",
-                            "payload": {
-                                "template_type": "generic",
-                                "elements": this.restaurants.slice(0, 3)
-                            }
-                        }
-                    };
-                    this.callSendAPI(sender_psid, response);
+                    this.sendRestaurantList(sender_psid);
                 } else if (userInput.intent == 'detail') {
                     // if user see details, display details.
                     var idx = userInput.position;

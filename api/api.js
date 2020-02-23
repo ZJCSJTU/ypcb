@@ -1,7 +1,8 @@
 const dataRestaurants = require('../data/restaurants.json').restaurants;
-const yelp = require('yelp-fusion');
+var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+// const yelp = require('yelp-fusion');
 const apiKey = process.env.YELP_API_KEY;
-const client = yelp.client(apiKey);
+// const client = yelp.client(apiKey);
 module.exports = class Api {
     constructor() {
 
@@ -37,72 +38,38 @@ module.exports = class Api {
         };
     }
 
-    // arguments and return values undecided
-     yelpFusion(require) {
-        // const searchRequest = {
-        //     term: require,
-        //     location: 'ann arbor, mi',
-        //     limit: 10
-        // };
-        // var restaurants = []
-        // // const request = async () => {
-        //  client.search(searchRequest).then(response => {
-        //      const firstResult = response.jsonBody.businesses;
-        //     //  const prettyJson = JSON.parse(JSON.stringify(firstResult));
-        //      console.log(firstResult);
-        //     //  console.log(Array.from(prettyJson).length);
-             
-        //      (firstResult).forEach((result) => {
-        //         //  console.log('result')
-        //         //  console.log(result)
-        //         restaurants = restaurants.concat([this.yelpFormatButton(result)]);
-        //          console.log(restaurants.length);
+    yelpFusion(require) {
+        // manually send a synchronous GET request to the end point.
+        var request = new XMLHttpRequest();
+        var yelpUrl = 'https://api.yelp.com/v3/businesses/search';
+        const params = {
+            term: require,
+            location: 'ann arbor, mi',
+            limit: 10
+        };
+        // construct query string
+        var queryString = Object.keys(params).map(key => key + '=' + params[key]).join('&');
+        yelpUrl += `?${queryString}`;
+        console.log(yelpUrl)
+        // false means synchronous request
+        request.open('GET', yelpUrl, false);
+        // set api toekn
+        request.setRequestHeader('Authorization', `Bearer ${apiKey}`);
+        request.send(null);
 
-        //     });
-        //      console.log(restaurants.length);
-        //  }).catch(e => {
-        //      console.log(e);
-        //  });
-        //  var count = 0;
-        //  console.log(restaurants.length);
-        //  while (restaurants.length == 0) {
-        //     count += 0.001;
-        //     // if (count > 10000) {
-        //     //     break;
-        //     // }
-        //     //  console.log(restaurants.length);
-        //     //  console.log(count);
-        //  }
-        //  console.log(restaurants.length);
-
-        // return restaurants;
-        // // }
-        // // return request();
-        // // await client.search(searchRequest);
-
-        // //     const firstResult = response.jsonBody.businesses[0];
-        // //     const prettyJson = JSON.stringify(firstResult, null, 4);
-        // //     console.log(prettyJson);
-        // //     prettyJson.forEach((result) => {
-        // //         restaurants.concat(this.yelpFormatButton(result));
-        // //     })
-        // //     return restaurants;
-
-        // // var x = await client.search(searchRequest).then(response => {
-        // //     const firstResult = response.jsonBody.businesses;
-        // //     const prettyJson = JSON.stringify(firstResult);
-        // //     console.log(prettyJson);
-        // //     // Array.from(prettyJson).forEach((result) => {
-        // //     //     restaurants.concat(this.yelpFormatButton(result));
-        // //     // });
-        // //     return dataRestaurants;
-        // // }).catch(e => {
-        // //     console.log(e);
-        // // })
-        // // // var response = await client.search(searchRequest);
-        // // await Promise.all(x);
-        // hard-coded
-        return dataRestaurants;
+        if (request.status === 200) {
+            var resp = JSON.parse(request.responseText);
+            var dataRestaurants = resp.businesses;
+            var restaurants = [];
+            dataRestaurants.forEach((result) => {
+                restaurants = restaurants.concat([this.yelpFormatButton(result)]);
+            });
+            return [dataRestaurants, restaurants];
+        } else {
+            return [[], []];
+        }
+        // // hard-coded
+        // return request.responseText;
     }
 
 
