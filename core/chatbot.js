@@ -68,10 +68,10 @@ module.exports = class Chatbot {
 
             var userInput = api.clinc(received_message.text);
 
-            if (this.state == states.ROOT) {
+            if (this.state === states.ROOT) {
                 // if user wants to find restaurant, state -> FIND
                 // and displays three restaurants returned by Yelp fusion
-                if (userInput.intent == 'find') {
+                if (userInput.intent === 'find') {
                     var yelpResult = api.yelpFusion(userInput.require)
                     this.dataRestaurants = yelpResult[0];
                     this.restaurants = yelpResult[1]
@@ -85,15 +85,15 @@ module.exports = class Chatbot {
                     }
                     this.callSendAPI(sender_psid, response);
                 }
-            } else if (this.state == states.FIND) {
+            } else if (this.state === states.FIND) {
                 // if user wants to change search filter, then re-call Yelp,
                 // and display new three restaurants
-                if (userInput.intent == 'find') {
+                if (userInput.intent === 'find') {
                     var yelpResult = api.yelpFusion(userInput.require)
                     this.dataRestaurants = yelpResult[0];
                     this.restaurants = yelpResult[1];
                     this.sendRestaurantList(sender_psid);
-                } else if (userInput.intent == 'remove') {
+                } else if (userInput.intent === 'remove') {
                     // if user removes one restaurant, display one new from the ones returned by Yelp API
                     var idx = userInput.position;
                     response = { 'text': 'Removing ' + this.restaurants[idx].title + '... New list is below' };
@@ -101,7 +101,7 @@ module.exports = class Chatbot {
                     this.restaurants.splice(idx, 1);
                     this.dataRestaurants.splice(idx, 1);
                     this.sendRestaurantList(sender_psid);
-                } else if (userInput.intent == 'detail') {
+                } else if (userInput.intent === 'detail') {
                     // if user see details, display details.
                     var idx = userInput.position;
                     // response = { 'text': this.restaurants[idx].title + ' is the best restaurant!!!' };
@@ -111,16 +111,16 @@ module.exports = class Chatbot {
                     var location = JSON.stringify(this.dataRestaurants[idx].location);
                     response = {'text': `Name: ${name}\nRating: ${rating}\nPrice: ${price}\nLocation: ${location}`}
                     this.callSendAPI(sender_psid, response);
-                } else if (userInput.intent == 'select') {
+                } else if (userInput.intent === 'select') {
                     // if user selects, change state to DECIDE, save what he selects, ask if they need further help.
                     var idx = userInput.position;
                     response = { 'text': this.restaurants[idx].title + ' is selected. Do you need other help?' };
                     this.callSendAPI(sender_psid, response);
                     this.state = states.DECIDE;
                 }              
-            } else if (this.state == states.DECIDE) {
+            } else if (this.state === states.DECIDE) {
                 // if user requests reservation, etc, then stay in DECIDE
-                if (userInput.intent == 'help') {
+                if (userInput.intent === 'help') {
                     response = { 'text': 'Did some help: ' + userInput.require };
                     this.callSendAPI(sender_psid, response);
                 }
